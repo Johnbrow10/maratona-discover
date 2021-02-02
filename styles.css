@@ -8,6 +8,11 @@
     box-sizing: border-box;
 }
 
+html {
+    font-size: 93.75%
+        /* e o mesmo que 15px */
+}
+
 body {
     background : #f0f2f5;
     font-family: 'Poppins', sans-serif;
@@ -103,9 +108,11 @@ body #balance h2 {
 }
 
 #data-table {
+    display       : block;
     width         : 100%;
     border-spacing: 0 0.5rem;
-    color         : #969cb3
+    color         : #969cb3;
+    overflow-x    : auto;
 }
 
 table thead tr th:first-child,
@@ -158,4 +165,18 @@ footer {
     padding   : 4rem 0 2rem;
     color     : var(--color-dark-blue);
     opacity   : 0.6;
+}
+
+@media(min-width:800px) {
+    html {
+        font-size: 87.5;
+        /*equivale a 14px*/
+    }
+
+    #balance {
+        display              : grid;
+        /* repetir tres vezes as colunas par se ajustar a pagina */
+        grid-template-columns: repeat(3, 1fr);
+        gap                  : 1rem;
+    }
 }
