@@ -14,7 +14,7 @@ const Modal = {
             .classList.remove('active')
     }
 
-}
+};
 
 const transactions = [
     {
@@ -35,18 +35,22 @@ const transactions = [
         amount: -10000,
         date: '23/01/2021'
     },
-]
-
-
-/*  Eu preciso somar as entradas
-    depois preciso somar as saidas e 
-    remover o valor das saidas assim terei o total */
+];
 
 const Transaction = {
+
+    all: transactions,
+
+    add(transaction) {
+        Transaction.all.push(transaction)
+
+        App.reload()
+    },
+
     incomes() {
         let income = 0
 
-        transactions.forEach(transaction => {
+        Transaction.all.forEach(transaction => {
             if (transaction.amount > 0) {
 
                 income += transaction.amount
@@ -60,7 +64,7 @@ const Transaction = {
 
         let expense = 0
 
-        transactions.forEach(transaction => {
+        Transaction.all.forEach(transaction => {
             if (transaction.amount < 0) {
 
                 expense += transaction.amount
@@ -74,7 +78,7 @@ const Transaction = {
     total() {
         return Transaction.incomes() + Transaction.expenses();
     }
-}
+};
 
 const DOM = {
 
@@ -112,8 +116,12 @@ const DOM = {
         document.getElementById('incomeDisplay').innerHTML = Utils.formatCurrency(Transaction.incomes());
         document.getElementById('expenseDisplay').innerHTML = Utils.formatCurrency(Transaction.expenses());
         document.getElementById('totalDisplay').innerHTML = Utils.formatCurrency(Transaction.total());
+    },
+
+    clearTransaction() {
+        DOM.transactionsContainer.innerHTML = "";
     }
-}
+};
 
 const Utils = {
     formatCurrency(value) {
@@ -130,12 +138,34 @@ const Utils = {
 
         return signal + value
     }
+};
+
+
+const App = {
+    init() {
+
+        // adicionar os objetos do array na tela de listagem
+        Transaction.all.forEach(transaction => {
+            DOM.addTransaction(transaction)
+        })
+
+        DOM.updateBalance();
+
+
+    },
+
+    reload() {
+        DOM.clearTransaction();
+        App.init();
+    },
 }
 
-// adicionar os objetos do array na tela de listagem
-transactions.forEach(function (transaction) {
-    DOM.addTransaction(transaction)
-})
+App.init();
 
+Transaction.add({
+    id: 39,
+    description: 'Hello',
+    amount: 200,
+    date: "23/01/2021"
+});
 
-DOM.updateBalance();
