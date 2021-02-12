@@ -56,19 +56,28 @@ const Transaction = {
 
 const DOM = {
 
-    addTransaction (transaction, index) {
+    transactionsContainer: document.querySelector('#data-table tbody'),
+
+    addTransaction(transaction, index) {
         const tr = document.createElement('tr')
-        tr.innerHTML = DOM.innerHTMLTransaction()
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction)
+
+        DOM.transactionsContainer.appendChild(tr)
+
+        console.log(tr.innerHTML)
     },
 
 
-    innerHTMLTransaction() {
+    innerHTMLTransaction(transaction) {
+        const CSSclass = transaction.amount > 0 ? "income" : "expense"
+
+        // const amount = 
 
         const html = `
         <tr>
-            <td class="description">Luz</td>
-            <td class="expense">- R$ 500,00</td>
-            <td class="date">23/01/2021</td>
+            <td class="description">${transaction.description}</td>
+            <td class="${CSSclass}">${transaction.amount}</td>
+            <td class="date">${transaction.date}</td>
             <td>
                 <img src="./assets/minus.svg" alt="Remover transação">
             </td>
@@ -77,4 +86,15 @@ const DOM = {
         return html;
     }
 }
+
+const Utils = {
+    formatCurrency(value) {
+        const signal = Number(value) < 0 ? "-": ""
+    }
+}
+
+// adicionar os objetos do array na tela de listagem
+transactions.forEach(function (transaction) {
+    DOM.addTransaction(transaction)
+})
 
