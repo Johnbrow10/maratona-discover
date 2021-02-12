@@ -20,7 +20,7 @@ const transactions = [
     {
         id: 1,
         description: 'Luz',
-        amount: -50000,
+        amount: -50001,
         date: '23/01/2021'
     },
     {
@@ -64,19 +64,19 @@ const DOM = {
 
         DOM.transactionsContainer.appendChild(tr)
 
-        console.log(tr.innerHTML)
+
     },
 
 
     innerHTMLTransaction(transaction) {
         const CSSclass = transaction.amount > 0 ? "income" : "expense"
 
-        // const amount = 
+        const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
         <tr>
             <td class="description">${transaction.description}</td>
-            <td class="${CSSclass}">${transaction.amount}</td>
+            <td class="${CSSclass}">${amount}</td>
             <td class="date">${transaction.date}</td>
             <td>
                 <img src="./assets/minus.svg" alt="Remover transação">
@@ -89,7 +89,18 @@ const DOM = {
 
 const Utils = {
     formatCurrency(value) {
-        const signal = Number(value) < 0 ? "-": ""
+        // colocar o numero em negativo se ele tiver o menos na frente
+        const signal = Number(value) < 0 ? "-" : "";
+
+        // Formatar para casas decimais e a moeda em real Brasileiro
+        value = String(value).replace(/\D/g, "");
+        value = Number(value) / 100;
+        value = value.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })
+
+        return signal + value
     }
 }
 
