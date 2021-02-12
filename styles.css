@@ -228,11 +228,11 @@ td.expense {
     background: #f0f2f5;
     padding   : 2.4rem;
     width     : 90%;
-    max-width : 500px;
+    max-width : 600px;
 }
 
 #form {
-    max-width: 500px; 
+    max-width: 500px;
 
 }
 
