@@ -20,7 +20,7 @@ const transactions = [
     {
         id: 1,
         description: 'Luz',
-        amount: -50001,
+        amount: -50035,
         date: '23/01/2021'
     },
     {
@@ -44,13 +44,35 @@ const transactions = [
 
 const Transaction = {
     incomes() {
-        // Somar as entradas
+        let income = 0
+
+        transactions.forEach(transaction => {
+            if (transaction.amount > 0) {
+
+                income += transaction.amount
+            }
+        })
+
+
+        return income;
     },
     expenses() {
-        // somar as Saidas
+
+        let expense = 0
+
+        transactions.forEach(transaction => {
+            if (transaction.amount < 0) {
+
+                expense += transaction.amount
+            }
+        })
+
+        return expense;
+
+
     },
     total() {
-
+        return Transaction.incomes() + Transaction.expenses();
     }
 }
 
@@ -84,6 +106,12 @@ const DOM = {
         </tr>
         `
         return html;
+    },
+
+    updateBalance() {
+        document.getElementById('incomeDisplay').innerHTML = Utils.formatCurrency(Transaction.incomes());
+        document.getElementById('expenseDisplay').innerHTML = Utils.formatCurrency(Transaction.expenses());
+        document.getElementById('totalDisplay').innerHTML = Utils.formatCurrency(Transaction.total());
     }
 }
 
@@ -109,3 +137,5 @@ transactions.forEach(function (transaction) {
     DOM.addTransaction(transaction)
 })
 
+
+DOM.updateBalance();
