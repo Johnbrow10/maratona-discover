@@ -16,25 +16,20 @@ const Modal = {
 
 };
 
+
+const Storage = {
+    get() {
+        return JSON.parse(localStorage.getItem("dev.finances:transactions")) || [];
+    },
+    set(transactions) {
+        localStorage.setItem("dev.finances:transactions", JSON.stringify(transactions))
+    }
+}
+
 const Transaction = {
 
-    all: [
-        {
-            description: 'Luz',
-            amount: -50035,
-            date: '23/01/2021'
-        },
-        {
-            description: 'Criaçao do Site',
-            amount: 500000,
-            date: '23/01/2021'
-        },
-        {
-            description: 'Agua',
-            amount: -10000,
-            date: '23/01/2021'
-        },
-    ],
+    all: Storage.get(),
+
 
     add(transaction) {
         Transaction.all.push(transaction)
@@ -87,7 +82,8 @@ const DOM = {
 
     addTransaction(transaction, index) {
         const tr = document.createElement('tr')
-        tr.innerHTML = DOM.innerHTMLTransaction(transaction)
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction, index)
+        tr.dataset.index = index
 
         DOM.transactionsContainer.appendChild(tr)
 
@@ -95,18 +91,18 @@ const DOM = {
     },
 
 
-    innerHTMLTransaction(transaction) {
-        const CSSclass = transaction.amount > 0 ? "income" : "expense"
+    innerHTMLTransaction(transaction, index) {
+        const CSSClass = transaction.amount > 0 ? "income" : "expense"
 
         const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
         <tr>
             <td class="description">${transaction.description}</td>
-            <td class="${CSSclass}">${amount}</td>
+            <td class="${CSSClass}">${amount}</td>
             <td class="date">${transaction.date}</td>
-            <td>
-                <img src="./assets/minus.svg" alt="Remover transação">
+            <td >
+                <img onClick="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação">
             </td>
         </tr>
         `
@@ -128,6 +124,8 @@ const Utils = {
 
     formatAmount(value) {
         value = Number(value) * 100
+
+        return value
 
     },
 
@@ -192,21 +190,34 @@ const Form = {
         }
     },
 
+    clearFields() {
+        Form.description.value = "";
+        Form.amount.value = "";
+        Form.date.value = "";
+    },
+
+
     submit(event) {
 
         event.preventDefault()
         try {
-            Form.validateFields()
+            // Verification if dados right
+            Form.validateFields();
+            // Capture transaction 
+            const transaction = Form.formatValues();
+            // Save Dados for transaction
+            Transaction.add(transaction);
 
-            const transaction = Form.formatValues()
+            // clear fields a form
+            Form.clearFields();
+
+            // Close Modal
+            Modal.close()
+
 
         } catch (error) {
             alert(error.message)
         }
-
-
-
-
 
     }
 }
@@ -214,13 +225,13 @@ const Form = {
 const App = {
     init() {
 
-        // adicionar os objetos do array na tela de listagem
-        Transaction.all.forEach(transaction => {
-            DOM.addTransaction(transaction)
-        })
+        // additional os objectors do array na screen de list
+        Transaction.all.forEach(DOM.addTransaction)
 
         DOM.updateBalance();
-
+        
+        // Atualizando o storage  
+        Storage.set(Transaction.all);
 
     },
 
